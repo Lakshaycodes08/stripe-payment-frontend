@@ -154,12 +154,12 @@ export default function CheckoutPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
 
-  useEffect(() => {
+ useEffect(() => {
     if (cartId) {
       createPaymentIntent();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [cartId]);
-
   async function createPaymentIntent() {
     try {
       // ============================================================
