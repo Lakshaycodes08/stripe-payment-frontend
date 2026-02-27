@@ -1,36 +1,105 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Stripe Payment Frontend
 
-## Getting Started
+A production-style payment frontend built with Next.js and TypeScript, integrated with a Fastify backend and Stripe Elements for secure card collection.
 
-First, run the development server:
+## Tech Stack
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+- **Framework**: Next.js (App Router)
+- **Language**: TypeScript
+- **Styling**: Tailwind CSS
+- **HTTP Client**: Axios
+- **Payment UI**: Stripe Elements (@stripe/react-stripe-js)
+
+## Project Structure
+```
+app/
+├── page.tsx              # Home page
+├── products/
+│   └── page.tsx          # Product listing + Add to Cart
+├── cart/
+│   └── page.tsx          # Cart view + Proceed to Checkout
+├── checkout/
+│   ├── page.tsx          # Stripe Elements checkout
+│   └── success/
+│       └── page.tsx      # Payment success page
+└── history/
+    └── page.tsx          # Payment history
+src/
+└── lib/
+    └── api.ts            # Axios instance + constants
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Features
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+- ✅ Browse products
+- ✅ Add to cart
+- ✅ View cart with total
+- ✅ Stripe Elements card input (PCI compliant)
+- ✅ Real-time payment processing
+- ✅ Payment success confirmation
+- ✅ Payment history view
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Pages
 
-## Learn More
+| Page | URL | Description |
+|------|-----|-------------|
+| Home | `/` | Landing page |
+| Products | `/products` | Browse and add to cart |
+| Cart | `/cart` | View cart and checkout |
+| Checkout | `/checkout?cart_id=1` | Enter card and pay |
+| Success | `/checkout/success` | Payment confirmed |
+| History | `/history` | Past payments |
 
-To learn more about Next.js, take a look at the following resources:
+## Setup
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### 1. Clone the repo
+```bash
+git clone https://github.com/Lakshaycodes08/stripe-payment-frontend.git
+cd stripe-payment-frontend
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+### 2. Install dependencies
+```bash
+npm install
+```
 
-## Deploy on Vercel
+### 3. Create `.env.local`
+```env
+NEXT_PUBLIC_API_URL=http://localhost:3000
+NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=pk_test_your_key
+```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+### 4. Start the frontend
+```bash
+npm run dev -- -p 3001
+```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+### 5. Make sure backend is running
+```
+http://localhost:3000
+```
+
+## Test Card
+```
+Card Number: 4242 4242 4242 4242
+Expiry:      12/28
+CVC:         123
+```
+
+## Key Decisions
+
+### Why Next.js App Router?
+App Router allows mixing Server and Client components. Pages with hooks use `'use client'` directive. Static pages render on the server by default.
+
+### Why Axios instance?
+Centralizing the base URL and headers in `src/lib/api.ts` means every component uses the same configuration without repeating it.
+
+### Why never send amount from frontend?
+The backend always calculates the total from the database. Frontend only sends `user_id` and `cart_id`. This prevents price manipulation.
+
+### Why Stripe Elements?
+Card details go directly from the browser to Stripe — never touching our backend. This is how PCI compliance is maintained.
+
+## Author
+
+Lakshay — [GitHub](https://github.com/Lakshaycodes08)
