@@ -11,11 +11,14 @@ export default function Home() {
           A full-stack payment integration built with Fastify + Next.js
         </p>
         <div className="flex gap-4 justify-center">
-          <Link href="/products" className="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700">
-            View Products
+          <Link href="/products" style={{backgroundColor: '#2563eb'}} className="text-white px-8 py-4 rounded-xl text-lg font-semibold shadow-md">
+            🛍️ View Products
           </Link>
-          <Link href="/cart" className="bg-gray-800 text-white px-6 py-3 rounded-lg hover:bg-gray-900">
-            View Cart
+          <Link href="/cart" style={{backgroundColor: '#7c3aed'}} className="text-white px-8 py-4 rounded-xl text-lg font-semibold shadow-md">
+            🛒 View Cart
+          </Link>
+          <Link href="/history" style={{backgroundColor: '#059669'}} className="text-white px-8 py-4 rounded-xl text-lg font-semibold shadow-md">
+            📜 Payment History
           </Link>
         </div>
       </div>
