@@ -39,88 +39,110 @@ export default function HistoryPage() {
   function formatDate(dateString: string): string {
     return new Date(dateString).toLocaleDateString('en-US', {
       year: 'numeric',
-      month: 'short',
+      month: 'long',
       day: 'numeric',
+    });
+  }
+
+  function formatTime(dateString: string): string {
+    return new Date(dateString).toLocaleTimeString('en-US', {
       hour: '2-digit',
       minute: '2-digit',
     });
   }
 
-  function getStatusColor(status: string): string {
+  function getStatusBadge(status: string): string {
     switch (status) {
-      case 'succeeded': return 'bg-green-100 text-green-700';
-      case 'pending':   return 'bg-yellow-100 text-yellow-700';
-      case 'failed':    return 'bg-red-100 text-red-700';
-      default:          return 'bg-gray-100 text-gray-700';
+      case 'succeeded': return 'badge-success';
+      case 'pending':   return 'badge-warning';
+      case 'failed':    return 'badge-error';
+      default:          return 'badge-warning';
     }
   }
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <p className="text-gray-500">Loading payment history...</p>
+      <div className="min-h-screen flex items-center justify-center" style={{ background: 'var(--bg-primary)' }}>
+        <p className="animate-pulse-subtle" style={{ color: 'var(--text-tertiary)' }}>
+          Loading order history...
+        </p>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8">
-      <div className="max-w-3xl mx-auto px-4">
+    <div className="min-h-screen" style={{ background: 'var(--bg-primary)' }}>
 
-        {/* Header */}
-        <div className="flex justify-between items-center mb-8">
-          <h1 className="text-3xl font-bold text-gray-900">Payment History</h1>
-          <Link href="/products" className="text-blue-600 hover:underline">
-            ← Shop More
-          </Link>
+      {/* Header */}
+      <header
+        className="px-8 py-6 flex justify-between items-center"
+        style={{ borderBottom: '1px solid var(--border-light)' }}
+      >
+        <Link href="/" className="heading-section text-xl link">Luxe Pay</Link>
+        <Link href="/products" className="link text-sm">
+          Browse Collection
+        </Link>
+      </header>
+
+      <div className="max-w-3xl mx-auto px-8 py-12">
+
+        {/* Title */}
+        <div className="mb-10">
+          <p className="text-label mb-3" style={{ color: 'var(--accent)' }}>Account</p>
+          <h1 className="heading-display text-4xl">Order History</h1>
         </div>
 
         {/* Empty State */}
         {payments.length === 0 ? (
-          <div className="text-center py-16">
-            <p className="text-gray-500 mb-4">No payments yet</p>
-            <Link
-              href="/products"
-              className="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700"
-            >
+          <div className="text-center py-20 animate-fade-in">
+            <p className="text-body mb-2">No orders yet</p>
+            <p className="text-sm mb-8" style={{ color: 'var(--text-tertiary)' }}>
+              Your purchase history will appear here.
+            </p>
+            <Link href="/products" className="btn-accent">
               Start Shopping
             </Link>
           </div>
         ) : (
           <div className="space-y-4">
-            {payments.map((payment) => (
+            {payments.map((payment, index) => (
               <div
                 key={payment.id}
-                className="bg-white rounded-xl shadow p-6"
+                className={`card p-6 sm:p-8 animate-fade-in delay-${Math.min(index + 1, 6)}`}
+                style={{ opacity: 0, animationFillMode: 'forwards' }}
               >
-                <div className="flex justify-between items-start">
+                <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
 
-                  {/* Left Side */}
+                  {/* Left — Date & ID */}
                   <div>
-                    <p className="text-sm text-gray-500 mb-1">
+                    <p className="font-medium mb-1" style={{ color: 'var(--text-primary)', letterSpacing: '-0.01em' }}>
                       {formatDate(payment.created_at)}
                     </p>
-                    <p className="text-xs text-gray-400 font-mono">
+                    <p className="text-xs" style={{ color: 'var(--text-tertiary)', fontFamily: 'var(--font-mono, monospace)' }}>
                       {payment.stripe_payment_intent_id}
                     </p>
                   </div>
 
-                  {/* Right Side */}
-                  <div className="text-right">
-                    <p className="text-xl font-bold text-gray-900 mb-2">
+                  {/* Right — Amount & Status */}
+                  <div className="flex items-center gap-5">
+                    <span className={`badge ${getStatusBadge(payment.status)}`}>
+                      {payment.status}
+                    </span>
+                    <span className="heading-section text-xl" style={{ minWidth: '80px', textAlign: 'right' }}>
                       {formatPrice(payment.amount)}
-                    </p>
-                    <span className={`text-xs font-semibold px-3 py-1 rounded-full ${getStatusColor(payment.status)}`}>
-                      {payment.status.toUpperCase()}
                     </span>
                   </div>
 
                 </div>
+
+                {/* Timestamp */}
+                <p className="text-xs mt-3" style={{ color: 'var(--text-tertiary)' }}>
+                  {formatTime(payment.created_at)}
+                </p>
               </div>
             ))}
           </div>
         )}
-
       </div>
     </div>
   );
